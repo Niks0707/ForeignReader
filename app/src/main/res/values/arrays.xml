@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="array_library_main_items">
+        <item>Bookshelf</item>
+        <item>Favorite</item>
+        <item>Recent</item>
+        <item>Open file</item>
+    </string-array>
+
+    <string-array name="array_library_main_items_description">
+        <item>Bookshelf</item>
+        <item>Favorite</item>
+        <item>Recent</item>
+        <item>Open file</item>
+    </string-array>
+
+
+</resources>
