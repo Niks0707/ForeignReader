@@ -1,4 +1,4 @@
-package niks.foreignreader;
+package niks.foreignreader.LibraryActivity;
 
 import android.widget.ImageView;
 import android.widget.TextView;

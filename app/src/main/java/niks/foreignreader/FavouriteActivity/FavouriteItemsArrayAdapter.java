@@ -1,4 +1,4 @@
-package niks.foreignreader;
+package niks.foreignreader.FavouriteActivity;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -8,6 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+
+import niks.foreignreader.R;
 
 
 public class FavouriteItemsArrayAdapter extends ArrayAdapter<String> {

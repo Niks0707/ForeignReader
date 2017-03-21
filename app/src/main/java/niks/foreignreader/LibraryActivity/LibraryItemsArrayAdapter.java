@@ -1,4 +1,4 @@
-package niks.foreignreader;
+package niks.foreignreader.LibraryActivity;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
+import niks.foreignreader.R;
 
 
 public class LibraryItemsArrayAdapter extends ArrayAdapter<String> {

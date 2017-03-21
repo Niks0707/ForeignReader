@@ -1,4 +1,4 @@
-package niks.foreignreader;
+package niks.foreignreader.LibraryActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,11 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import niks.foreignreader.FavouriteActivity.FavouriteActivity;
+import niks.foreignreader.ReaderActivity.ReaderActivity;
+import niks.foreignreader.OpenFileDialogAnother;
+import niks.foreignreader.R;
 
 /**
  * Created by Niks on 25.10.2016.
@@ -48,24 +53,28 @@ public class LibraryActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case BOOKSHELF:
-                        break;
-                    case FAVORITE:
-                        Intent intent = new Intent(LibraryActivity.this, FavouriteActivity.class);
-                        startActivity(intent);
-                        break;
-                    case RECENT:
-                        break;
-                    case OPEN_FILE:
-                        showFileDialog();
-                        break;
-                    default:
-                        break;
-                }
+                onClickListLibraryItem(position);
             }
         });
         listView.setAdapter(adapter);
+    }
+
+    private void onClickListLibraryItem(int position) {
+        switch (position) {
+            case BOOKSHELF:
+                break;
+            case FAVORITE:
+                Intent intent = new Intent(LibraryActivity.this, FavouriteActivity.class);
+                startActivity(intent);
+                break;
+            case RECENT:
+                break;
+            case OPEN_FILE:
+                showFileDialog();
+                break;
+            default:
+                break;
+        }
     }
 
 

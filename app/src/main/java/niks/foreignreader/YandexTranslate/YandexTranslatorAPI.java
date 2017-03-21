@@ -1,4 +1,4 @@
-package niks.foreignreader;
+package niks.foreignreader.YandexTranslate;
 /*
  * Copyright 2013 Robert Theis
  *

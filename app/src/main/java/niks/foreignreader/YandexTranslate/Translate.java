@@ -1,4 +1,4 @@
-package niks.foreignreader;
+package niks.foreignreader.YandexTranslate;
 /*
  * Copyright 2013 Robert Theis
  *
@@ -28,7 +28,7 @@ public final class Translate extends YandexTranslatorAPI {
     public static String DEFAULT_LANG;
 
     //prevent instantiation
-    private Translate(){};
+    private Translate(){}
 
     /**
      * Translates text from a given Language to another given Language using Yandex.

@@ -1,4 +1,4 @@
-package niks.foreignreader;
+package niks.foreignreader.ReaderActivity;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -9,32 +9,32 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.text.BreakIterator;
 import java.util.Locale;
+
+import niks.foreignreader.LibraryActivity.LibraryActivity;
+import niks.foreignreader.LongClickLinkMovementMethod;
+import niks.foreignreader.LongClickableSpan;
+import niks.foreignreader.PersistantStorage;
+import niks.foreignreader.R;
+import niks.foreignreader.YandexTranslate.ApiKeys;
+import niks.foreignreader.YandexTranslate.Translate;
 
 public class ReaderActivity extends AppCompatActivity {
 
     String filename;
     String text;
     String textToAddFavourite;
-
+    BookFileReader bookFileReader;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,57 +42,25 @@ public class ReaderActivity extends AppCompatActivity {
         Intent intent = getIntent();
         text = "Clickable words in text view ";
         filename = intent.getStringExtra(LibraryActivity.FILENAME);
-        readFileSD();
+        //readFileSD();
+        bookFileReader = new BookFileReader(filename, 2000);
+        text = bookFileReader.getNextText();
+        Boolean b = isTooLarge((TextView) findViewById(R.id.textView), text);
 
+        setTextSpannable();
         init();
     }
 
-    private void readFile() {
-        try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(
-                    openFileInput(filename)));
-            text = "";
-            String str;
-            while ((str = br.readLine()) != null) {
-                text += str;
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private int getTextViewLength() {
+
+        return 0;
+    }
+    private boolean isTooLarge (TextView text, String newText) {
+        float textWidth = text.getPaint().measureText(newText);
+        return (textWidth >= text.getMeasuredWidth ());
     }
 
-    void readFileSD() {
-        // проверяем доступность SD
-        if (!Environment.getExternalStorageState().equals(
-                Environment.MEDIA_MOUNTED)) {
-            Log.d("ERROR", "SD-карта не доступна: " + Environment.getExternalStorageState());
-            return;
-        }
-        // получаем путь к SD
-        File sdPath = Environment.getExternalStorageDirectory();
-        // добавляем свой каталог к пути
-        sdPath = new File(sdPath.getAbsolutePath());
-        // формируем объект File, который содержит путь к файлу
-        File sdFile = new File(filename);
-        try {
-            // открываем поток для чтения
-            BufferedReader br = new BufferedReader(new FileReader(sdFile));
-            text = "";
-            String str;
-            while ((str = br.readLine()) != null) {
-                text += str;
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    private void init() {
+    private void setTextSpannable() {
         final String definition = text.trim();
         TextView definitionView = (TextView) findViewById(R.id.textView);
         definitionView.setMovementMethod(LongClickLinkMovementMethod.getInstance());
@@ -111,9 +79,6 @@ public class ReaderActivity extends AppCompatActivity {
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
-
-        setTranslateScreenDefault();
-
         definitionView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -121,6 +86,10 @@ public class ReaderActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    private void init() {
+        setTranslateScreenDefault();
 
         findViewById(R.id.buttonClose).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,11 +130,14 @@ public class ReaderActivity extends AppCompatActivity {
                 TextView definitionView = (TextView) findViewById(R.id.textView);
                 int start = definitionView.getSelectionStart();
                 int end = definitionView.getSelectionEnd();
-                String mText = definition.substring(start, end);
+                String mText = text.substring(start, end);
                 sendYandexTranslateAsyncQuery(mText, v.getContext());
             }
         });
     }
+
+
+
 
     private void setTranslateScreenDefault() {
 
