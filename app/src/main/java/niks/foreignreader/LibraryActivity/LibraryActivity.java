@@ -25,6 +25,7 @@ public class LibraryActivity extends AppCompatActivity {
     private final int FAVORITE = 1;
     private final int RECENT = 2;
     private final int OPEN_FILE = 3;
+    private final int OPEN_TEST_FILE = 4;
     private final String[] FILTER_FILENAME_END_WITH = {".txt", ".fb2", ".zip.fb2", ".epub"};
 
 
@@ -72,11 +73,19 @@ public class LibraryActivity extends AppCompatActivity {
             case OPEN_FILE:
                 showFileDialog();
                 break;
+            case OPEN_TEST_FILE:
+                openTestFile();
+                break;
             default:
                 break;
         }
     }
 
+    private void openTestFile() {
+        Intent intent = new Intent(LibraryActivity.this, ReaderActivity.class);
+        intent.putExtra(FILENAME, "/storage/emulated/0/read2.txt");
+        startActivity(intent);
+    }
 
     private void showFileDialog() {
         OpenFileDialogAnother openFileDialogAnother = new OpenFileDialogAnother(this);

@@ -13,22 +13,12 @@
     tools:context="niks.foreignreader.MainActivity.MainActivity">
 
 
-    <ScrollView
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
-            android:longClickable="true"
-            android:text="TextView"
-            android:textAlignment="textStart"
-            android:textIsSelectable="true"
-            android:textSize="24sp" /><!-- android:textAlignment= "viewStart" -->
-    </ScrollView>
+    </android.support.v4.view.ViewPager>
 
     <FrameLayout
         android:id="@+id/frameLayoutFAButtonTranslate"
@@ -79,7 +69,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:text="Origiginal TEXT"
+                    android:text="Original TEXT"
                     android:textColor="@android:color/white"
                     android:textSize="28sp" />
 

@@ -1,8 +1,6 @@
 package niks.foreignreader.ReaderActivity;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -10,20 +8,19 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Spannable;
-import android.text.TextPaint;
-import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.BreakIterator;
-import java.util.Locale;
-
 import niks.foreignreader.LibraryActivity.LibraryActivity;
-import niks.foreignreader.LongClickLinkMovementMethod;
-import niks.foreignreader.LongClickableSpan;
 import niks.foreignreader.PersistantStorage;
 import niks.foreignreader.R;
 import niks.foreignreader.YandexTranslate.ApiKeys;
@@ -35,58 +32,80 @@ public class ReaderActivity extends AppCompatActivity {
     String text;
     String textToAddFavourite;
     BookFileReader bookFileReader;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reader);
         Intent intent = getIntent();
-        text = "Clickable words in text view ";
+        text = "Clickable words in textView ";
         filename = intent.getStringExtra(LibraryActivity.FILENAME);
-        //readFileSD();
-        bookFileReader = new BookFileReader(filename, 2000);
+        bookFileReader = new BookFileReader(filename, 5000);
         text = bookFileReader.getNextText();
-        Boolean b = isTooLarge((TextView) findViewById(R.id.textView), text);
-
-        setTextSpannable();
+        onCreatePager();
         init();
     }
 
-    private int getTextViewLength() {
 
-        return 0;
-    }
-    private boolean isTooLarge (TextView text, String newText) {
-        float textWidth = text.getPaint().measureText(newText);
-        return (textWidth >= text.getMeasuredWidth ());
-    }
+    ViewPager pager;
+    PagerAdapter pagerAdapter;
 
-    private void setTextSpannable() {
-        final String definition = text.trim();
-        TextView definitionView = (TextView) findViewById(R.id.textView);
-        definitionView.setMovementMethod(LongClickLinkMovementMethod.getInstance());
-        definitionView.setText(definition, TextView.BufferType.SPANNABLE);
-        Spannable spans = (Spannable) definitionView.getText();
+    private void onCreatePager() {
+        pager = (ViewPager) findViewById(R.id.viewPager);
+        pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
+        pager.setAdapter(pagerAdapter);
 
-        BreakIterator iterator = BreakIterator.getWordInstance(Locale.US);
-        iterator.setText(definition);
-        int start = iterator.first();
-        for (int end = iterator.next(); end != BreakIterator.DONE; start = end, end = iterator
-                .next()) {
-            String possibleWord = definition.substring(start, end);
-            if (Character.isLetterOrDigit(possibleWord.charAt(0))) {
-                ClickableSpan clickSpan = getClickableSpan(possibleWord);
-                spans.setSpan(clickSpan, start, end,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-        }
-        definitionView.setOnLongClickListener(new View.OnLongClickListener() {
+        pager.setOnPageChangeListener(new OnPageChangeListener() {
+
             @Override
-            public boolean onLongClick(View v) {
-                findViewById(R.id.floatingActionButtonTranslate).setVisibility(View.VISIBLE);
-                return false;
+            public void onPageSelected(int position) {
+                Log.d("TAG", "onPageSelected, position = " + position);
+            }
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset,
+                                       int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
             }
         });
     }
+
+    private class MyFragmentPagerAdapter extends FragmentPagerAdapter {
+
+        public MyFragmentPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            ReaderPageFragment readerPageFragment = ReaderPageFragment.newInstance(position, text);
+            readerPageFragment.setReaderClickableSpan(new ReaderClickableSpan() {
+                @Override
+                public void onClick(View widget) {
+                    findViewById(R.id.floatingActionButtonTranslate).setVisibility(View.INVISIBLE);
+                    sendYandexTranslateAsyncQuery(mWord, widget.getContext());
+                }
+            });
+            readerPageFragment.setTextViewOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    findViewById(R.id.floatingActionButtonTranslate).setVisibility(View.VISIBLE);
+                    return false;
+                }
+            });
+            return readerPageFragment;
+        }
+
+        @Override
+        public int getCount() {
+            return 10;
+        }
+
+    }
+
 
     private void init() {
         setTranslateScreenDefault();
@@ -127,7 +146,7 @@ public class ReaderActivity extends AppCompatActivity {
         findViewById(R.id.floatingActionButtonTranslate).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TextView definitionView = (TextView) findViewById(R.id.textView);
+                TextView definitionView = (TextView) findViewById(R.id.textViewFragmentReader);
                 int start = definitionView.getSelectionStart();
                 int end = definitionView.getSelectionEnd();
                 String mText = text.substring(start, end);
@@ -135,8 +154,6 @@ public class ReaderActivity extends AppCompatActivity {
             }
         });
     }
-
-
 
 
     private void setTranslateScreenDefault() {
@@ -154,31 +171,6 @@ public class ReaderActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.textViewTranslText)).setText("");
     }
 
-    private ClickableSpan getClickableSpan(final String word) {
-        return new LongClickableSpan() {
-            final String mWord;
-
-            {
-                mWord = word;
-            }
-
-            @Override
-            public void onClick(View v) {
-                findViewById(R.id.floatingActionButtonTranslate).setVisibility(View.INVISIBLE);
-                sendYandexTranslateAsyncQuery(mWord, v.getContext());
-            }
-
-            public void onLongClick(View widget) {
-            }
-
-            public void updateDrawState(TextPaint ds) {
-                super.updateDrawState(ds);
-                ds.setUnderlineText(false);
-                ds.setColor(Color.BLACK);
-
-            }
-        };
-    }
 
     private void sendYandexTranslateAsyncQuery(String text, Context context) {
         TextView originTextView = (TextView) findViewById(R.id.textViewOrigText);
@@ -198,38 +190,6 @@ public class ReaderActivity extends AppCompatActivity {
 
     }
 
-    ;
-
-
-    private void showDialogResult(String word, View widget) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(ReaderActivity.this);
-        builder.setTitle("Translate");
-        TextView textView = new TextView(ReaderActivity.this);
-        textView.setText(word);
-        textView.setTextSize(24f);
-        builder.setView(textView);
-        //builder.setMessage(mWord);
-        builder.setCancelable(true);
-        builder.setPositiveButton(android.R.string.ok,
-                new DialogInterface.OnClickListener() { // Кнопка ОК
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss(); // Отпускает диалоговое окно
-                    }
-                });
-        AlertDialog dialog = builder.create();
-        String translatedText = "";
-
-        try {
-            YandexTranslateAsyncQuery ytaQuery = new YandexTranslateAsyncQuery(word, widget.getContext(), textView);
-            ytaQuery.execute();
-        } catch (Exception ex) {
-            Toast.makeText(widget.getContext(), ex.getMessage(), Toast.LENGTH_SHORT)
-                    .show();
-        }
-
-        dialog.show();
-    }
 
 
     class YandexTranslateAsyncQuery extends AsyncTask<String, String, String> {

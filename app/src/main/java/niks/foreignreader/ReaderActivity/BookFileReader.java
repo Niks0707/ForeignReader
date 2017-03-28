@@ -36,11 +36,12 @@ public class BookFileReader {
         String text = "";
         try {
             String str;
-            for (int i = 0; i < textLength; i++) {
+            for (int i = 0; i < textLength;) {
                 if ((str = bufferedReader.readLine()) == null) {
                     break;
                 }
                 text += str;
+                i = text.length();
             }
         } catch (IOException e) {
             e.printStackTrace();
