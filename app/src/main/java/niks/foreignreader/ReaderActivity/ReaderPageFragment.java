@@ -28,17 +28,7 @@ public class ReaderPageFragment extends Fragment {
     int pageNumber;
     String pageText;
 
-    static ReaderPageFragment newInstance(int page, String text) {
-        ReaderPageFragment pageFragment = new ReaderPageFragment();
-
-        Bundle arguments = new Bundle();
-        arguments.putInt(ARGUMENT_PAGE_NUMBER, page);
-        arguments.putString(ARGUMENT_PAGE_TEXT, text);
-        pageFragment.setArguments(arguments);
-        return pageFragment;
-    }
-
-    public ReaderPageFragment() {
+    {
         mTextViewOnLongClickListener = new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -52,6 +42,16 @@ public class ReaderPageFragment extends Fragment {
             }
 
         };
+    }
+
+    static ReaderPageFragment newInstance(int page, String text) {
+        ReaderPageFragment pageFragment = new ReaderPageFragment();
+
+        Bundle arguments = new Bundle();
+        arguments.putInt(ARGUMENT_PAGE_NUMBER, page);
+        arguments.putString(ARGUMENT_PAGE_TEXT, text);
+        pageFragment.setArguments(arguments);
+        return pageFragment;
     }
 
     public void setTextViewOnLongClickListener(View.OnLongClickListener textViewOnLongClickListener) {

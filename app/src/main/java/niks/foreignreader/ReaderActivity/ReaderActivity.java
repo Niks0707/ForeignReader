@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -23,8 +22,7 @@ import android.widget.Toast;
 import niks.foreignreader.LibraryActivity.LibraryActivity;
 import niks.foreignreader.PersistantStorage;
 import niks.foreignreader.R;
-import niks.foreignreader.YandexTranslate.ApiKeys;
-import niks.foreignreader.YandexTranslate.Translate;
+import niks.foreignreader.YandexTranslate.YandexTranslateAsyncQuery;
 
 public class ReaderActivity extends AppCompatActivity {
 
@@ -47,15 +45,15 @@ public class ReaderActivity extends AppCompatActivity {
     }
 
 
-    ViewPager pager;
+    ViewPager viewPager;
     PagerAdapter pagerAdapter;
 
     private void onCreatePager() {
-        pager = (ViewPager) findViewById(R.id.viewPager);
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
         pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
-        pager.setAdapter(pagerAdapter);
+        viewPager.setAdapter(pagerAdapter);
 
-        pager.setOnPageChangeListener(new OnPageChangeListener() {
+        viewPager.setOnPageChangeListener(new OnPageChangeListener() {
 
             @Override
             public void onPageSelected(int position) {
@@ -161,11 +159,6 @@ public class ReaderActivity extends AppCompatActivity {
         findViewById(R.id.floatingActionButtonTranslate).setVisibility(View.INVISIBLE);
         findViewById(R.id.floatingActionButtonToFavourite).setVisibility(View.INVISIBLE);
 
-//        FrameLayout frameLayoutFAButtonTranslate = (FrameLayout) findViewById(R.id.frameLayoutFAButtonTranslate);
-//        FrameLayout.LayoutParams frameLayoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-//        frameLayoutParams.gravity = Gravity.BOTTOM|Gravity.LEFT;
-//        frameLayoutFAButtonTranslate.setLayoutParams(frameLayoutParams);
-
         findViewById(R.id.frameLayoutTranslateScreen).setVisibility(View.INVISIBLE);
         ((TextView) findViewById(R.id.textViewOrigText)).setText("");
         ((TextView) findViewById(R.id.textViewTranslText)).setText("");
@@ -173,13 +166,29 @@ public class ReaderActivity extends AppCompatActivity {
 
 
     private void sendYandexTranslateAsyncQuery(String text, Context context) {
-        TextView originTextView = (TextView) findViewById(R.id.textViewOrigText);
-        originTextView.setText(text);
-        TextView resultTextView = (TextView) findViewById(R.id.textViewTranslText);
 
+        ((TextView) findViewById(R.id.textViewOrigText)).setText(text);
         try {
-            YandexTranslateAsyncQuery ytaQuery = new YandexTranslateAsyncQuery(text, context, resultTextView);
-            ytaQuery.execute();
+            YandexTranslateAsyncQuery yandexTranslateQuery = new YandexTranslateAsyncQuery(text) {
+                @Override
+                protected void onPostExecute(String arg) {
+                    try {
+                        findViewById(R.id.marker_progress).setVisibility(View.GONE);
+                        ((TextView) findViewById(R.id.textViewTranslText)).setText(getTranslatedText());
+                        findViewById(R.id.floatingActionButtonToFavourite).setVisibility(View.VISIBLE);
+                        findViewById(R.id.floatingActionButtonToFavourite).setClickable(true);
+                        Drawable myFabSrc = getResources().getDrawable(android.R.drawable.star_big_off);
+                        Drawable willBeWhite = myFabSrc.getConstantState().newDrawable();
+                        willBeWhite.mutate().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
+                        ((FloatingActionButton) findViewById(R.id.floatingActionButtonToFavourite)).setImageDrawable(willBeWhite);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            };
+            yandexTranslateQuery.execute();
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT)
                     .show();
@@ -190,65 +199,5 @@ public class ReaderActivity extends AppCompatActivity {
 
     }
 
-
-
-    class YandexTranslateAsyncQuery extends AsyncTask<String, String, String> {
-
-
-        String responseString;
-        String translatedText;
-        Context mContext;
-        TextView mTextView;
-
-        public YandexTranslateAsyncQuery(String text, Context context, TextView textView) {
-            super();
-            responseString = text;
-            mContext = context;
-            mTextView = textView;
-        }
-
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @SuppressWarnings("deprecation")
-        protected String doInBackground(String... args) {
-
-            try {
-                Translate.setKey(ApiKeys.YANDEX_API_KEY);
-
-                translatedText = Translate.execute(responseString, "en", "ru");
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-
-            }
-
-            return null;
-        }
-
-        protected void onPostExecute(String arg) {
-
-
-            try {
-                findViewById(R.id.marker_progress).setVisibility(View.GONE);
-                mTextView.setText(translatedText);
-                findViewById(R.id.floatingActionButtonToFavourite).setVisibility(View.VISIBLE);
-                findViewById(R.id.floatingActionButtonToFavourite).setClickable(true);
-                Drawable myFabSrc = getResources().getDrawable(android.R.drawable.star_big_off);
-                Drawable willBeWhite = myFabSrc.getConstantState().newDrawable();
-                willBeWhite.mutate().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
-                ((FloatingActionButton) findViewById(R.id.floatingActionButtonToFavourite)).setImageDrawable(willBeWhite);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
 
 }
