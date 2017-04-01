@@ -10,31 +10,29 @@ public abstract class YandexTranslateAsyncQuery extends AsyncTask<String, String
 
     private String mResponseString;
     private String mTranslatedText;
+    private String mFromLanguage;
+    private String mToLanguage;
 
-    public YandexTranslateAsyncQuery(String responseString) {
+    public YandexTranslateAsyncQuery(String responseString, String fromLanguage, String toLanguage) {
         super();
         mResponseString = responseString;
+        mFromLanguage = fromLanguage;
+        mToLanguage = toLanguage;
     }
 
     public String getTranslatedText() {
         return mTranslatedText;
     }
 
-
-
-    @SuppressWarnings("deprecation")
+    @Override
     protected String doInBackground(String... args) {
 
         try {
             Translate.setKey(ApiKeys.YANDEX_API_KEY);
-            mTranslatedText = Translate.execute(mResponseString, "en", "ru");
-
+            mTranslatedText = Translate.execute(mResponseString, mFromLanguage, mToLanguage);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-
         }
-
         return null;
     }
 

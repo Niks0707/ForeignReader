@@ -18,74 +18,42 @@ package niks.foreignreader.YandexTranslate;
  * Language - an enum of language codes supported by the Yandex API
  */
 
-public enum Language {
-
-    ALBANIAN("sq"),
-    DEFAULT(Translate.DEFAULT_LANG.toString()),
-    ARMENIAN("hy"),
-    AZERBAIJANI("az"),
-    ARABIC("ar"),
-    BELARUSIAN("be"),
-    BULGARIAN("bg"),
-    CATALAN("ca"),
-    CROATIAN("hr"),
-    CZECH("cs"),
-    DANISH("da"),
-    DUTCH("nl"),
-    ENGLISH("en"),
-    ESTONIAN("et"),
-    FINNISH("fi"),
-    FRENCH("fr"),
-    GERMAN("de"),
-    GEORGIAN("ka"),
-    GREEK("el"),
-    HUNGARIAN("hu"),
-    ITALIAN("it"),
-    LATVIAN("lv"),
-    LITHUANIAN("lt"),
-    MACEDONIAN("mk"),
-    NORWEGIAN("no"),
-    POLISH("pl"),
-    PORTUGUESE("pt"),
-    ROMANIAN("ro"),
-    RUSSIAN("ru"),
-    SERBIAN("sr"),
-    SLOVAK("sk"),
-    SLOVENIAN("sl"),
-    SPANISH("es"),
-    SWEDISH("sv"),
-    TURKISH("tr"),
-    UKRAINIAN("uk");
-
-    /**
-     * String representation of this language.
-     */
-    private final String language;
-
-    /**
-     * Enum constructor.
-     * @param pLanguage The language identifier.
-     */
-    private Language(final String pLanguage) {
-        language = pLanguage;
-    }
-
-    public static Language fromString(final String pLanguage) {
-        for (Language l : values()) {
-            if (l.toString().equals(pLanguage)) {
-                return l;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Returns the String representation of this language.
-     * @return The String representation of this language.
-     */
-    @Override
-    public String toString() {
-        return language;
-    }
+public class Language {
+    public static final String ALBANIAN ="sq";
+    public static final String DEFAULT = Translate.DEFAULT_LANG.toString();
+    public static final String ARMENIAN= "hy";
+    public static final String AZERBAIJANI="az";
+    public static final String ARABIC="ar";
+    public static final String BELARUSIAN="be";
+    public static final String BULGARIAN="bg";
+    public static final String CATALAN="ca";
+    public static final String CROATIAN="hr";
+    public static final String CZECH="cs";
+    public static final String DANISH="da";
+    public static final String DUTCH="nl";
+    public static final String ENGLISH="en";
+    public static final String ESTONIAN="et";
+    public static final String FINNISH="fi";
+    public static final String FRENCH="fr";
+    public static final String GERMAN="de";
+    public static final String GEORGIAN="ka";
+    public static final String GREEK="el";
+    public static final String HUNGARIAN="hu";
+    public static final String ITALIAN="it";
+    public static final String LATVIAN="lv";
+    public static final String LITHUANIAN="lt";
+    public static final String MACEDONIAN="mk";
+    public static final String NORWEGIAN="no";
+    public static final String POLISH="pl";
+    public static final String PORTUGUESE="pt";
+    public static final String ROMANIAN="ro";
+    public static final String RUSSIAN="ru";
+    public static final String SERBIAN="sr";
+    public static final String SLOVAK="sk";
+    public static final String SLOVENIAN="sl";
+    public static final String SPANISH="es";
+    public static final String SWEDISH="sv";
+    public static final String TURKISH="tr";
+    public static final String UKRAINIAN="uk";
 
 }
