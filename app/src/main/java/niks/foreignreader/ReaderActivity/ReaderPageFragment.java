@@ -1,7 +1,7 @@
 package niks.foreignreader.ReaderActivity;
 
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.Spannable;
 import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
@@ -44,11 +44,10 @@ public class ReaderPageFragment extends Fragment {
         };
     }
 
-    static ReaderPageFragment newInstance(int page, String text) {
+    static ReaderPageFragment newInstance(String text) {
         ReaderPageFragment pageFragment = new ReaderPageFragment();
 
         Bundle arguments = new Bundle();
-        arguments.putInt(ARGUMENT_PAGE_NUMBER, page);
         arguments.putString(ARGUMENT_PAGE_TEXT, text);
         pageFragment.setArguments(arguments);
         return pageFragment;
@@ -75,11 +74,12 @@ public class ReaderPageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_reader, null);
 
         TextView textViewFragmentReader = (TextView) view.findViewById(R.id.textViewFragmentReader);
-        setTextSpannable(textViewFragmentReader, pageText);
+        setSpannableText(textViewFragmentReader, pageText);
+
         return view;
     }
 
-    private void setTextSpannable(TextView textView, String text) {
+    private void setSpannableText(TextView textView, String text) {
         final String definition = text.trim();
         textView.setMovementMethod(LongClickLinkMovementMethod.getInstance());
         textView.setText(definition, TextView.BufferType.SPANNABLE);

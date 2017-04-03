@@ -12,23 +12,20 @@ import android.view.View;
 public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 
 
+    ReaderClickableSpan mReaderClickableSpan;
+    View.OnLongClickListener mTextViewOnLongClickListener;
     private String mText;
-    private ReaderClickableSpan mReaderClickableSpan;
-    private View.OnLongClickListener mOnLongClickListener;
-    public MyFragmentPagerAdapter(FragmentManager fm, String text,
-                                  ReaderClickableSpan readerClickableSpan,
-                                  View.OnLongClickListener onLongClickListener) {
+
+    public MyFragmentPagerAdapter(FragmentManager fm, String text) {
         super(fm);
         mText = text;
-        mReaderClickableSpan = readerClickableSpan;
-        mOnLongClickListener = onLongClickListener;
     }
 
     @Override
     public Fragment getItem(int position) {
-        ReaderPageFragment readerPageFragment = ReaderPageFragment.newInstance(position, mText);
+        ReaderPageFragment readerPageFragment = ReaderPageFragment.newInstance(mText);
         readerPageFragment.setReaderClickableSpan(mReaderClickableSpan);
-        readerPageFragment.setTextViewOnLongClickListener(mOnLongClickListener);
+        readerPageFragment.setTextViewOnLongClickListener(mTextViewOnLongClickListener);
         return readerPageFragment;
     }
 
@@ -37,4 +34,11 @@ public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
         return 10;
     }
 
+    public void setTextViewOnLongClickListener(View.OnLongClickListener textViewOnLongClickListener) {
+        mTextViewOnLongClickListener = textViewOnLongClickListener;
+    }
+
+    public void setReaderClickableSpan(ReaderClickableSpan readerClickableSpan) {
+        mReaderClickableSpan = readerClickableSpan;
+    }
 }

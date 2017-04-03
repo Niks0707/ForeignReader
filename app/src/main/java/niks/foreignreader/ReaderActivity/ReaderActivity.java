@@ -6,7 +6,6 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.app.AppCompatActivity;
@@ -23,22 +22,17 @@ import niks.foreignreader.YandexTranslate.YandexTranslateAsyncQuery;
 
 public class ReaderActivity extends AppCompatActivity {
 
-    private String mFileName;
     String textToAddFavourite;
-    BookFileReader bookFileReader;
+    String fileName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reader);
         Intent intent = getIntent();
-        mFileName = intent.getStringExtra(LibraryActivity.FILENAME);
-        bookFileReader = new BookFileReader(mFileName, 5000);
-        String text;
-        text = "Clickable words in textView ";
-        text = bookFileReader.getNextText();
+        fileName = intent.getStringExtra(LibraryActivity.FILENAME);
 
-        setViewPager(text);
+        //setViewPager("text");
         setTranslateScreenDefault();
         setButtonTranslate();
         setButtonToFavourite();
@@ -49,12 +43,34 @@ public class ReaderActivity extends AppCompatActivity {
                 setTranslateScreenDefault();
             }
         });
+
+
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
+        viewPager.post(new Runnable() {
+            public void run() {
+
+                BookFileReader bookFileReader = new BookFileReader(fileName, 5000);
+                String text;
+                text = "Clickable words in textView ";
+                text = bookFileReader.getText();
+
+                int charactersCount = new CharactersCounter(viewPager, 24).getCount();
+                text = text.substring(0, (int) (charactersCount * 0.9));
+                setViewPager(text);
+            }
+        });
     }
+
 
     private void setViewPager(String text) {
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
-        PagerAdapter pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), text,
-                new MyReaderClickableSpan(), new MyOnLongClickListener());
+        MyFragmentPagerAdapter pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), text);
+
+        pagerAdapter.setReaderClickableSpan(new MyReaderClickableSpan());
+        pagerAdapter.setTextViewOnLongClickListener(new MyOnLongClickListener());
+        /*((SpannableTextView) findViewById(R.id.textViewFragmentReader)).
+                setReaderClickableSpan(new MyReaderClickableSpan().
+                        setTextViewOnLongClickListener(new MyOnLongClickListener()));*/
         viewPager.setAdapter(pagerAdapter);
 
         viewPager.setOnPageChangeListener(new OnPageChangeListener() {
@@ -75,7 +91,6 @@ public class ReaderActivity extends AppCompatActivity {
         });
     }
 
-
     private void setButtonToFavourite() {
         findViewById(R.id.floatingActionButtonToFavourite).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,7 +99,6 @@ public class ReaderActivity extends AppCompatActivity {
                 String translatedText = ((TextView) findViewById(R.id.textViewTranslText)).getText().toString();
                 if (origText != "" && translatedText != "") {
                     if (origText != textToAddFavourite) {
-//                    favouriteWords.put(origText, translatedText);
                         PersistantStorage.init(ReaderActivity.this);
                         PersistantStorage.addProperty(origText, translatedText);
                         textToAddFavourite = origText;

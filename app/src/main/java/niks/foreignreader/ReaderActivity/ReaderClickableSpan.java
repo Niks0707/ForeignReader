@@ -3,10 +3,21 @@ package niks.foreignreader.ReaderActivity;
 import android.graphics.Color;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
+import android.view.View;
 
 public abstract class ReaderClickableSpan extends ClickableSpan implements Cloneable {
 
     protected String mWord;
+    private View.OnLongClickListener mTextViewOnLongClickListener;
+
+    public ReaderClickableSpan() {
+        mTextViewOnLongClickListener = new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return false;
+            }
+        };
+    }
 
     public void setWord(String word) {
         mWord = word;
@@ -27,5 +38,14 @@ public abstract class ReaderClickableSpan extends ClickableSpan implements Clone
 
         }
         return null;
+    }
+
+    public ReaderClickableSpan setTextViewOnLongClickListener(View.OnLongClickListener textViewOnLongClickListener) {
+        this.mTextViewOnLongClickListener = textViewOnLongClickListener;
+        return this;
+    }
+
+    public View.OnLongClickListener getTextViewOnLongClickListener() {
+        return mTextViewOnLongClickListener;
     }
 }
