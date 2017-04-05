@@ -3,6 +3,7 @@ package niks.foreignreader.ReaderActivity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Spannable;
+import android.text.SpannableString;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,18 +23,12 @@ public class ReaderPageFragment extends Fragment {
 
     static final String ARGUMENT_PAGE_NUMBER = "arg_page_number";
     static final String ARGUMENT_PAGE_TEXT = "arg_page_text";
-    ReaderClickableSpan mReaderClickableSpan;
-    View.OnLongClickListener mTextViewOnLongClickListener;
+    private ReaderClickableSpan mReaderClickableSpan;
+    private View.OnLongClickListener mTextViewOnLongClickListener;
     int pageNumber;
     String pageText;
 
     {
-        mTextViewOnLongClickListener = new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                return false;
-            }
-        };
         mReaderClickableSpan = new ReaderClickableSpan() {
 
             @Override
@@ -43,15 +38,6 @@ public class ReaderPageFragment extends Fragment {
         };
     }
 
-    static ReaderPageFragment newInstance(String text) {
-        ReaderPageFragment pageFragment = new ReaderPageFragment();
-
-        Bundle arguments = new Bundle();
-        arguments.putString(ARGUMENT_PAGE_TEXT, text);
-        pageFragment.setArguments(arguments);
-        return pageFragment;
-    }
-
     public void setTextViewOnLongClickListener(View.OnLongClickListener textViewOnLongClickListener) {
         mTextViewOnLongClickListener = textViewOnLongClickListener;
     }
@@ -59,6 +45,7 @@ public class ReaderPageFragment extends Fragment {
     public void setReaderClickableSpan(ReaderClickableSpan readerClickableSpan) {
         mReaderClickableSpan = readerClickableSpan;
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,31 +60,31 @@ public class ReaderPageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_reader, null);
 
         TextView textViewFragmentReader = (TextView) view.findViewById(R.id.textViewFragmentReader);
-        setSpannableText(textViewFragmentReader, pageText);
 
+        textViewFragmentReader.setMovementMethod(LongClickLinkMovementMethod.getInstance());
+        if (mTextViewOnLongClickListener != null) {
+            textViewFragmentReader.setOnLongClickListener(mTextViewOnLongClickListener);
+        }
+
+        textViewFragmentReader.setText(getSpannableText(pageText), TextView.BufferType.SPANNABLE);
         return view;
     }
 
-    private void setSpannableText(TextView textView, String text) {
-        final String definition = text.trim();
-        textView.setMovementMethod(LongClickLinkMovementMethod.getInstance());
-        textView.setText(definition, TextView.BufferType.SPANNABLE);
-        Spannable spans = (Spannable) textView.getText();
-
+    private Spannable getSpannableText(String text) {
+        final String trimedText = text.trim();
+        Spannable spans = new SpannableString(trimedText);
         BreakIterator iterator = BreakIterator.getWordInstance(Locale.US);
-        iterator.setText(definition);
+        iterator.setText(trimedText);
         int start = iterator.first();
         for (int end = iterator.next(); end != BreakIterator.DONE; start = end, end = iterator
                 .next()) {
-            String possibleWord = definition.substring(start, end);
+            String possibleWord = trimedText.substring(start, end);
             if (Character.isLetterOrDigit(possibleWord.charAt(0))) {
                 ReaderClickableSpan clickSpan = mReaderClickableSpan.setWord(possibleWord).clone();
                 //mReaderClickableSpan.setWord(possibleWord);
                 spans.setSpan(clickSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
-        textView.setOnLongClickListener(mTextViewOnLongClickListener);
+        return spans;
     }
-
-
 }

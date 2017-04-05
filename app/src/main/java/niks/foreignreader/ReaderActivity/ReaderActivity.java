@@ -7,12 +7,15 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.text.BreakIterator;
+import java.util.Locale;
 
 import niks.foreignreader.LibraryActivity.LibraryActivity;
 import niks.foreignreader.PersistantStorage;
@@ -64,28 +67,29 @@ public class ReaderActivity extends AppCompatActivity {
 
     private void setViewPager(String text) {
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
-        MyFragmentPagerAdapter pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), text);
+        MyFragmentPagerAdapter pagerAdapter =
+                new MyFragmentPagerAdapter(getSupportFragmentManager(), text);
 
         pagerAdapter.setReaderClickableSpan(new MyReaderClickableSpan());
         pagerAdapter.setTextViewOnLongClickListener(new MyOnLongClickListener());
         viewPager.setAdapter(pagerAdapter);
 
-        viewPager.setOnPageChangeListener(new OnPageChangeListener() {
-
-            @Override
-            public void onPageSelected(int position) {
-                Log.d("TAG", "onPageSelected, position = " + position);
-            }
-
-            @Override
-            public void onPageScrolled(int position, float positionOffset,
-                                       int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
+//        viewPager.setOnPageChangeListener(new OnPageChangeListener() {
+//
+//            @Override
+//            public void onPageSelected(int position) {
+//                Log.d("TAG", "onPageSelected, position = " + position);
+//            }
+//
+//            @Override
+//            public void onPageScrolled(int position, float positionOffset,
+//                                       int positionOffsetPixels) {
+//            }
+//
+//            @Override
+//            public void onPageScrollStateChanged(int state) {
+//            }
+//        });
     }
 
     private void setButtonToFavourite() {
@@ -166,6 +170,27 @@ public class ReaderActivity extends AppCompatActivity {
         ((FloatingActionButton) findViewById(R.id.floatingActionButtonToFavourite)).setImageDrawable(willBeWhite);
     }
 
+    public Spannable setSpannableText(String text) {
+        final String definition = text.trim();
+        Spannable spans = new SpannableString(definition);
+
+        BreakIterator iterator = BreakIterator.getWordInstance(Locale.US);
+        iterator.setText(definition);
+        int start = iterator.first();
+        for (int end = iterator.next(); end != BreakIterator.DONE; start = end, end = iterator
+                .next()) {
+            String possibleWord = definition.substring(start, end);
+            if (Character.isLetterOrDigit(possibleWord.charAt(0))) {
+                ReaderClickableSpan clickSpan = new MyReaderClickableSpan()
+                        .setWord(possibleWord);
+                //mReaderClickableSpan.setWord(possibleWord);
+                spans.setSpan(clickSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
+        return spans;
+    }
+
+
     public class MyReaderClickableSpan extends ReaderClickableSpan {
         @Override
         public void onClick(View widget) {
@@ -181,4 +206,6 @@ public class ReaderActivity extends AppCompatActivity {
             return false;
         }
     }
+
+
 }
