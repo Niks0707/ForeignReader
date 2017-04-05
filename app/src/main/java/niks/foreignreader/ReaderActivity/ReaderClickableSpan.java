@@ -19,8 +19,9 @@ public abstract class ReaderClickableSpan extends ClickableSpan implements Clone
         };
     }
 
-    public void setWord(String word) {
+    public ReaderClickableSpan setWord(String word) {
         mWord = word;
+        return this;
     }
 
     public void updateDrawState(TextPaint textPaint) {
@@ -35,7 +36,7 @@ public abstract class ReaderClickableSpan extends ClickableSpan implements Clone
             ReaderClickableSpan readerClickableSpan = (ReaderClickableSpan) super.clone();
             return readerClickableSpan;
         } catch (CloneNotSupportedException e) {
-
+            e.printStackTrace();
         }
         return null;
     }

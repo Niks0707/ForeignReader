@@ -3,7 +3,6 @@ package niks.foreignreader.ReaderActivity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Spannable;
-import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,8 +91,8 @@ public class ReaderPageFragment extends Fragment {
                 .next()) {
             String possibleWord = definition.substring(start, end);
             if (Character.isLetterOrDigit(possibleWord.charAt(0))) {
-                ClickableSpan clickSpan = mReaderClickableSpan.clone();
-                mReaderClickableSpan.setWord(possibleWord);
+                ReaderClickableSpan clickSpan = mReaderClickableSpan.setWord(possibleWord).clone();
+                //mReaderClickableSpan.setWord(possibleWord);
                 spans.setSpan(clickSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }

@@ -68,9 +68,6 @@ public class ReaderActivity extends AppCompatActivity {
 
         pagerAdapter.setReaderClickableSpan(new MyReaderClickableSpan());
         pagerAdapter.setTextViewOnLongClickListener(new MyOnLongClickListener());
-        /*((SpannableTextView) findViewById(R.id.textViewFragmentReader)).
-                setReaderClickableSpan(new MyReaderClickableSpan().
-                        setTextViewOnLongClickListener(new MyOnLongClickListener()));*/
         viewPager.setAdapter(pagerAdapter);
 
         viewPager.setOnPageChangeListener(new OnPageChangeListener() {
