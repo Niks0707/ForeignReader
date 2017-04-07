@@ -1,4 +1,4 @@
-package niks.foreignreader.YandexTranslate;
+package niks.foreignreader.yandextranslate;
 /*
  * Copyright 2013 Robert Theis
  *
@@ -21,9 +21,8 @@ import java.net.URL;
         import java.io.BufferedReader;
         import java.io.InputStream;
         import java.io.InputStreamReader;
-        import java.net.URL;
 
-        import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.HttpsURLConnection;
 
         import org.json.simple.JSONArray;
         import org.json.simple.JSONObject;

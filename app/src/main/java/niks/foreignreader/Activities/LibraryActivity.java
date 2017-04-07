@@ -1,4 +1,4 @@
-package niks.foreignreader.LibraryActivity;
+package niks.foreignreader.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,10 +10,10 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import niks.foreignreader.FavouriteActivity.FavouriteActivity;
-import niks.foreignreader.ReaderActivity.ReaderActivity;
 import niks.foreignreader.OpenFileDialogAnother;
 import niks.foreignreader.R;
+import niks.foreignreader.view.LibraryItemsArray;
+import niks.foreignreader.view.LibraryItemsArrayAdapter;
 
 /**
  * Created by Niks on 25.10.2016.

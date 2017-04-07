@@ -1,4 +1,4 @@
-package niks.foreignreader.YandexTranslate;
+package niks.foreignreader.yandextranslate;
 
 /**
  * Created by Niks on 07.12.2016.

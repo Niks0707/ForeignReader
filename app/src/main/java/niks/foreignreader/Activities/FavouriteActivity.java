@@ -1,4 +1,4 @@
-package niks.foreignreader.FavouriteActivity;
+package niks.foreignreader.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 import niks.foreignreader.PersistantStorage;
 import niks.foreignreader.R;
+import niks.foreignreader.view.FavouriteItemsArrayAdapter;
 
 public class FavouriteActivity extends AppCompatActivity {
 

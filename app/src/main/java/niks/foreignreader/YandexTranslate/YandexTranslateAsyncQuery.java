@@ -1,23 +1,27 @@
-package niks.foreignreader.YandexTranslate;
+package niks.foreignreader.yandextranslate;
 
 import android.os.AsyncTask;
+
+import niks.foreignreader.activities.ReaderActivity;
 
 /**
  * Created by Niks on 01.04.2017.
  */
 
-public abstract class YandexTranslateAsyncQuery extends AsyncTask<String, String, String> {
+public class YandexTranslateAsyncQuery extends AsyncTask<String, String, String> {
 
     private String mResponseString;
     private String mTranslatedText;
     private String mFromLanguage;
     private String mToLanguage;
+    private ReaderActivity mActivity;
 
-    public YandexTranslateAsyncQuery(String responseString, String fromLanguage, String toLanguage) {
+    public YandexTranslateAsyncQuery(ReaderActivity activity, String responseString, String fromLanguage, String toLanguage) {
         super();
         mResponseString = responseString;
         mFromLanguage = fromLanguage;
         mToLanguage = toLanguage;
+        mActivity = activity;
     }
 
     public String getTranslatedText() {
@@ -41,6 +45,9 @@ public abstract class YandexTranslateAsyncQuery extends AsyncTask<String, String
         super.onPreExecute();
     }
 
-    protected abstract void onPostExecute(String arg);
+    @Override
+    protected void onPostExecute(String arg) {
+        mActivity.showTranslatedText(mTranslatedText);
+    }
 
 }

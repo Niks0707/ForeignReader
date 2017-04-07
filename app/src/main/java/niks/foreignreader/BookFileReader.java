@@ -1,4 +1,4 @@
-package niks.foreignreader.ReaderActivity;
+package niks.foreignreader;
 
 import java.io.BufferedReader;
 import java.io.File;
