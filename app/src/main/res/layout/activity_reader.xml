@@ -12,6 +12,12 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="niks.foreignreader.activities.MainActivity">
 
+    <ProgressBar
+        android:id="@+id/progress"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
@@ -19,6 +25,15 @@
         android:layout_height="match_parent">
 
     </android.support.v4.view.ViewPager>
+
+    <LinearLayout
+        android:id="@+id/pageIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="4px"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="2dp"
+        android:background="#FFFFFF"
+        android:orientation="horizontal" />
 
     <FrameLayout
         android:id="@+id/frameLayoutFAButtonTranslate"
