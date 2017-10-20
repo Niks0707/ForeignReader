@@ -1,20 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textViewFragmentReader"
+    <ProgressBar
+        android:id="@+id/progress"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:longClickable="true"
-        android:text="TextView"
-        android:textAlignment="textStart"
-        android:textIsSelectable="true"
-        android:textColor="#555555"
-        android:textSize="24sp" />
+        android:layout_above="@+id/pageIndicator" />
+
+    <TextView
+        android:id="@+id/textViewForMeasure"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/pageIndicator"
+        android:visibility="invisible" />
+
+    <ProgressBar
+        android:id="@+id/pageIndicator"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="2dp"
+        android:background="#FFFFFF"
+        android:orientation="horizontal" />
+
+    <FrameLayout
+        android:id="@+id/frameLayoutFAButtonTranslate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/translate_floatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="visible"
+            app:backgroundTint="@android:color/holo_blue_dark"
+            app:fabSize="normal"
+            app:srcCompat="@android:drawable/ic_menu_sort_alphabetically" />
+    </FrameLayout>
+
+    <include layout="@layout/view_translate_text" />
 
 </RelativeLayout>
